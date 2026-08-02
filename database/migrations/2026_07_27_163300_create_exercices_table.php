@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('titre');
             $table->longText('enonce');
             $table->longText('correction');
+            $table->string('image')->nullable();
+            $table->string('fichier_pdf')->nullable();
             $table->integer('ordre')->default(0);
             $table->boolean('is_published')->default(false);
             $table->foreignId('id_lecon')->constrained('lecons')->cascadeOnDelete();
