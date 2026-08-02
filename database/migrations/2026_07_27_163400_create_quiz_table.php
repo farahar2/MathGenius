@@ -17,6 +17,15 @@ return new class extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_lecon')->constrained('lecons')->cascadeOnDelete();
+            $table->foreignId('id_chapitre')
+                  ->nullable()
+                  ->constrained('chapitres')
+                  ->nullOnDelete();
+            $table->enum('difficulte', ['facile', 'moyen', 'difficile'])
+                  ->default('moyen');
+            $table->enum('niveau', ['debutant', 'intermediaire', 'avance'])
+                  ->nullable();
+            $table->unsignedInteger('duree_secondes')->default(0);
             $table->timestamps();
         });
     }

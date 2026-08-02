@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('prenom', 100)->after('name');
-            $table->enum('role', ['student', 'admin'])
+            $table->enum('role', ['student', 'formateur'])
                   ->default('student')
                   ->after('prenom');
             $table->boolean('is_premium')
