@@ -18,6 +18,8 @@ class QuizController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorize('create', Quiz::class);
+
         $data = $request->validate([
             'id_lecon' => ['required', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -36,6 +38,8 @@ class QuizController extends Controller
 
     public function update(Request $request, Quiz $quiz): JsonResponse
     {
+        $this->authorize('update', $quiz);
+
         $data = $request->validate([
             'id_lecon' => ['sometimes', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -51,6 +55,8 @@ class QuizController extends Controller
 
     public function destroy(Quiz $quiz): JsonResponse
     {
+        $this->authorize('delete', $quiz);
+
         $quiz->delete();
 
         return response()->json(null, 204);

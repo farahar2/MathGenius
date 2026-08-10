@@ -38,6 +38,8 @@ class ChapitreController extends Controller
      */
     public function store(StoreChapitreRequest $request): ChapitreResource
     {
+        $this->authorize('create', Chapitre::class);
+
         $chapitre = Chapitre::create($request->validated());
 
         return new ChapitreResource($chapitre);
@@ -64,6 +66,8 @@ class ChapitreController extends Controller
      */
     public function update(UpdateChapitreRequest $request, Chapitre $chapitre): ChapitreResource
     {
+        $this->authorize('update', $chapitre);
+
         $chapitre->update($request->validated());
 
         return new ChapitreResource($chapitre);
@@ -78,6 +82,8 @@ class ChapitreController extends Controller
      */
     public function destroy(Chapitre $chapitre): JsonResponse
     {
+        $this->authorize('delete', $chapitre);
+
         $chapitre->delete();
 
         return response()->json(null, 204);

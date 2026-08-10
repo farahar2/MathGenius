@@ -26,6 +26,8 @@ class ExerciceController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorize('create', Exercice::class);
+
         $data = $request->validate([
             'titre' => ['required', 'string'],
             'enonce' => ['required', 'string'],
@@ -47,6 +49,8 @@ class ExerciceController extends Controller
 
     public function update(Request $request, Exercice $exercice): JsonResponse
     {
+        $this->authorize('update', $exercice);
+
         $data = $request->validate([
             'titre' => ['sometimes', 'string'],
             'enonce' => ['sometimes', 'string'],
@@ -65,6 +69,8 @@ class ExerciceController extends Controller
 
     public function destroy(Exercice $exercice): JsonResponse
     {
+        $this->authorize('delete', $exercice);
+
         $exercice->delete();
 
         return response()->json(null, 204);

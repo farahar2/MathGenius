@@ -26,6 +26,8 @@ class QuestionController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorize('create', Question::class);
+
         $data = $request->validate([
             'question' => ['required', 'string'],
             'option_a' => ['required', 'string', 'max:500'],
@@ -49,6 +51,8 @@ class QuestionController extends Controller
 
     public function update(Request $request, Question $question): JsonResponse
     {
+        $this->authorize('update', $question);
+
         $data = $request->validate([
             'question' => ['sometimes', 'string'],
             'option_a' => ['sometimes', 'string', 'max:500'],
@@ -69,6 +73,8 @@ class QuestionController extends Controller
 
     public function destroy(Question $question): JsonResponse
     {
+        $this->authorize('delete', $question);
+
         $question->delete();
 
         return response()->json(null, 204);

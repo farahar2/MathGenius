@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Chapitre;
 use App\Models\Niveau;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,9 +23,10 @@ class ChapitreTest extends TestCase
 
     public function test_store_chapitre_returns_201_with_valid_id_niveau(): void
     {
+        $formateur = User::factory()->create(['role' => 'formateur']);
         $niveau = Niveau::factory()->create();
 
-        $response = $this->postJson('/api/chapitres', [
+        $response = $this->actingAs($formateur)->postJson('/api/chapitres', [
             'titre'     => 'Chapitre 1',
             'id_niveau' => $niveau->id,
         ]);
@@ -35,7 +37,9 @@ class ChapitreTest extends TestCase
 
     public function test_store_chapitre_returns_422_with_invalid_data(): void
     {
-        $response = $this->postJson('/api/chapitres', [
+        $formateur = User::factory()->create(['role' => 'formateur']);
+
+        $response = $this->actingAs($formateur)->postJson('/api/chapitres', [
             'titre'     => '',
             'id_niveau' => 999,
         ]);
@@ -46,10 +50,11 @@ class ChapitreTest extends TestCase
 
     public function test_update_chapitre_returns_200_with_valid_data(): void
     {
+        $formateur = User::factory()->create(['role' => 'formateur']);
         $chapitre = Chapitre::factory()->create();
         $niveau = Niveau::factory()->create();
 
-        $response = $this->putJson("/api/chapitres/{$chapitre->id}", [
+        $response = $this->actingAs($formateur)->putJson("/api/chapitres/{$chapitre->id}", [
             'titre'     => 'Chapitre mis à jour',
             'id_niveau' => $niveau->id,
         ]);
