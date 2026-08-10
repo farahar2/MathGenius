@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('titre');
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->string('fichier_pdf')->nullable();
             $table->integer('ordre')->default(0);
             $table->boolean('is_published')->default(false);
             $table->foreignId('id_niveau')->constrained('niveaux')->cascadeOnDelete();

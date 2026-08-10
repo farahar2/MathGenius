@@ -11,6 +11,15 @@ return new class extends Migration
         Schema::create('quiz', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_lecon')->constrained('lecons')->cascadeOnDelete();
+            $table->foreignId('id_chapitre')
+                  ->nullable()
+                  ->constrained('chapitres')
+                  ->nullOnDelete();
+            $table->enum('difficulte', ['facile', 'moyen', 'difficile'])
+                  ->default('moyen');
+            $table->enum('niveau', ['debutant', 'intermediaire', 'avance'])
+                  ->nullable();
+            $table->unsignedInteger('duree_secondes')->default(0);
             $table->timestamps();
         });
     }
