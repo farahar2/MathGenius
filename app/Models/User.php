@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'prenom', 'email', 'password', 'role', 'is_premium'])]
+#[Fillable(['name', 'prenom', 'email', 'password', 'role', 'is_premium', 'niveau_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -34,19 +34,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the filiere that owns the user.
+     * Get the niveau that owns the user.
      */
-    public function filiere(): BelongsTo
+    public function niveau(): BelongsTo
     {
-        return $this->belongsTo(Filiere::class, 'filiere_id');
+        return $this->belongsTo(Niveau::class, 'niveau_id');
     }
 
     /**
-     * Get the quiz results for the user.
+     * Get the quiz attempts for the user.
      */
-    public function quiz(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function tentatives(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Quiz::class, 'id_user');
+        return $this->hasMany(Tentative::class, 'id_utilisateur');
     }
 
     public function isAdmin(): bool
