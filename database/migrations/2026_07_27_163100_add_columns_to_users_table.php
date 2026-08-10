@@ -16,10 +16,10 @@ return new class extends Migration
             $table->boolean('is_premium')
                   ->default(false)
                   ->after('role');
-            $table->foreignId('filiere_id')
+            $table->foreignId('niveau_id')
                   ->nullable()
                   ->after('is_premium')
-                  ->constrained('filieres')
+                  ->constrained('niveaux')
                   ->nullOnDelete();
         });
     }
@@ -27,12 +27,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['filiere_id']);
+            $table->dropForeign(['niveau_id']);
             $table->dropColumn([
                 'prenom',
                 'role',
                 'is_premium',
-                'filiere_id',
+                'niveau_id',
             ]);
         });
     }
