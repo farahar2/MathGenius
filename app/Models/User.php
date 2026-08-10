@@ -32,6 +32,21 @@ class User extends Authenticatable
             'is_premium' => 'boolean',
         ];
     }
+
+    /**
+     * Get the niveau that owns the user.
+     */
+    public function niveau(): BelongsTo
+    {
+        return $this->belongsTo(Niveau::class, 'niveau_id');
+    }
+
+    /**
+     * Get the quiz attempts for the user.
+     */
+    public function tentatives(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Tentative::class, 'id_utilisateur');
     }
 
     public function isAdmin(): bool
