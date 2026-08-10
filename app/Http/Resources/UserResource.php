@@ -16,9 +16,9 @@ class UserResource extends JsonResource
             'email'      => $this->email,
             'role'       => $this->role,
             'is_premium' => $this->is_premium,
-            'filiere'    => $this->whenLoaded('filiere', fn () => [
-                'id'  => $this->filiere?->id,
-                'nom' => $this->filiere?->nom,
+            'niveau'     => $this->whenLoaded('niveau', fn () => [
+                'id'  => $this->niveau?->id,
+                'nom' => $this->niveau?->nom,
             ]),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
