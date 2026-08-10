@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chapitres', function (Blueprint $table) {
+        Schema::create('niveaux', function (Blueprint $table) {
             $table->id();
-            $table->string('titre');
-            $table->text('description')->nullable();
+            $table->string('nom', 100);
             $table->integer('ordre')->default(0);
-            $table->boolean('is_published')->default(false);
-            $table->foreignId('id_niveau')->constrained('niveaux')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chapitres');
+        Schema::dropIfExists('niveaux');
     }
 };

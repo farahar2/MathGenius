@@ -10,12 +10,6 @@ return new class extends Migration
     {
         Schema::create('quiz', function (Blueprint $table) {
             $table->id();
-            $table->integer('score')->default(0);
-            $table->decimal('score_pct', 5, 2)->default(0.00);
-            $table->text('analyse_ia')->nullable();
-            $table->text('recomm_ia')->nullable();
-            $table->timestamp('completed_at')->nullable();
-            $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_lecon')->constrained('lecons')->cascadeOnDelete();
             $table->timestamps();
         });
