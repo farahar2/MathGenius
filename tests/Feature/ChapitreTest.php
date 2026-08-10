@@ -32,4 +32,30 @@ class ChapitreTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonPath('data.id_niveau', $niveau->id);
     }
+
+    public function test_store_chapitre_returns_422_with_invalid_data(): void
+    {
+        $response = $this->postJson('/api/chapitres', [
+            'titre'     => '',
+            'id_niveau' => 999,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['titre', 'id_niveau']);
+    }
+
+    public function test_update_chapitre_returns_200_with_valid_data(): void
+    {
+        $chapitre = Chapitre::factory()->create();
+        $niveau = Niveau::factory()->create();
+
+        $response = $this->putJson("/api/chapitres/{$chapitre->id}", [
+            'titre'     => 'Chapitre mis à jour',
+            'id_niveau' => $niveau->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.titre', 'Chapitre mis à jour')
+            ->assertJsonPath('data.id_niveau', $niveau->id);
+    }
 }
