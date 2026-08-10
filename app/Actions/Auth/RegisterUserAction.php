@@ -17,7 +17,7 @@ class RegisterUserAction
                 'email'      => $data['email'],
                 'password'   => Hash::make($data['password']),
                 'role'       => $data['role'] ?? 'student',
-                'filiere_id' => $data['filiere_id'] ?? null,
+                'niveau_id' => $data['niveau_id'] ?? null,
             ]);
         });
     }
