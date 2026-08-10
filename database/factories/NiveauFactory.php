@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Chapitre;
 use App\Models\Niveau;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Chapitre>
+ * @extends Factory<Niveau>
  */
-class ChapitreFactory extends Factory
+class NiveauFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,11 +18,8 @@ class ChapitreFactory extends Factory
     public function definition(): array
     {
         return [
-            'titre' => $this->faker->sentence(3),
-            'description' => $this->faker->paragraph(),
+            'nom' => fake()->unique()->word(),
             'ordre' => $this->faker->numberBetween(1, 10),
-            'is_published' => $this->faker->boolean(),
-            'id_niveau' => Niveau::factory(),
         ];
     }
 }
