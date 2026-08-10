@@ -30,10 +30,10 @@ class AuthController extends Controller
      * @bodyParam password string required Le mot de passe (min 8 caractères). Example: secret1234
      * @bodyParam password_confirmation string required Confirmation du mot de passe. Example: secret1234
      * @bodyParam role string Le rôle (student par défaut). Example: student
-     * @bodyParam filiere_id int L'identifiant de la filière. Example: 1
+     * @bodyParam niveau_id int L'identifiant du niveau. Example: 1
      *
      * @response 201 {
-     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "filiere": null, "created_at": "..." },
+     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "niveau": null, "created_at": "..." },
      *   "token": "1|abc123..."
      * }
      */
@@ -58,7 +58,7 @@ class AuthController extends Controller
      * @bodyParam password string required Le mot de passe. Example: secret1234
      *
      * @response {
-     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "filiere": null, "created_at": "..." },
+     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "niveau": null, "created_at": "..." },
      *   "token": "1|abc123..."
      * }
      *
@@ -109,13 +109,13 @@ class AuthController extends Controller
      * @authenticated
      *
      * @response {
-     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "filiere": null, "created_at": "..." }
+     *   "user": { "id": 1, "name": "Dupont", "prenom": "Jean", "email": "jean@example.com", "role": "student", "is_premium": false, "niveau": null, "created_at": "..." }
      * }
      */
     public function me(Request $request): JsonResponse
     {
         return response()->json([
-            'user' => UserResource::make($request->user()->load('filiere')),
+            'user' => UserResource::make($request->user()->load('niveau')),
         ]);
     }
 }

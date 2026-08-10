@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Chapitre;
-use App\Models\Filiere;
+use App\Models\Niveau;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +23,7 @@ class ChapitreFactory extends Factory
             'description' => $this->faker->paragraph(),
             'ordre' => $this->faker->numberBetween(1, 10),
             'is_published' => $this->faker->boolean(),
-            'id_filiere' => Filiere::factory(),
+            'id_niveau' => Niveau::factory(),
         ];
     }
 }

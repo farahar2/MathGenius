@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->enum('reponse_eleve', ['A', 'B', 'C', 'D'])->nullable();
             $table->boolean('est_correcte')->default(false);
-            $table->foreignId('id_quiz')->constrained('quiz')->cascadeOnDelete();
+            $table->foreignId('id_tentative')->constrained('tentatives')->cascadeOnDelete();
             $table->foreignId('id_question')->constrained('questions')->cascadeOnDelete();
             $table->timestamps();
         });

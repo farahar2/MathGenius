@@ -17,12 +17,12 @@ class ChapitreController extends Controller
      *
      * @group Chapitres
      *
-     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_filiere":1,"created_at":"...","updated_at":"..."}]
+     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_niveau":1,"created_at":"...","updated_at":"..."}]
      */
     public function index(Request $request): AnonymousResourceCollection
     {
         $chapitres = Chapitre::query()
-            ->when($request->has('id_filiere'), fn ($q) => $q->where('id_filiere', $request->integer('id_filiere')))
+            ->when($request->has('id_niveau'), fn ($q) => $q->where('id_niveau', $request->integer('id_niveau')))
             ->orderBy('ordre')
             ->get();
 
@@ -34,7 +34,7 @@ class ChapitreController extends Controller
      *
      * @group Chapitres
      *
-     * @response 201 [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_filiere":1}]
+     * @response 201 [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_niveau":1}]
      */
     public function store(StoreChapitreRequest $request): ChapitreResource
     {
@@ -48,7 +48,7 @@ class ChapitreController extends Controller
      *
      * @group Chapitres
      *
-     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_filiere":1}]
+     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_niveau":1}]
      */
     public function show(Chapitre $chapitre): ChapitreResource
     {
@@ -60,7 +60,7 @@ class ChapitreController extends Controller
      *
      * @group Chapitres
      *
-     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_filiere":1}]
+     * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_niveau":1}]
      */
     public function update(UpdateChapitreRequest $request, Chapitre $chapitre): ChapitreResource
     {
