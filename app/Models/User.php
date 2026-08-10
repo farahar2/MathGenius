@@ -7,19 +7,17 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-<<<<<<< HEAD
-#[Fillable(['name', 'email', 'password'])]
-=======
 #[Fillable(['name', 'prenom', 'email', 'password', 'role', 'is_premium', 'niveau_id'])]
->>>>>>> d5a2808 (add Niveau, Tentative and update User models)
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -31,25 +29,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_premium' => 'boolean',
         ];
     }
-<<<<<<< HEAD
-=======
-
-    /**
-     * Get the niveau that owns the user.
-     */
-    public function niveau(): BelongsTo
-    {
-        return $this->belongsTo(Niveau::class, 'niveau_id');
-    }
-
-    /**
-     * Get the quiz attempts for the user.
-     */
-    public function tentatives(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Tentative::class, 'id_utilisateur');
     }
 
     public function isAdmin(): bool
@@ -71,5 +53,5 @@ class User extends Authenticatable
     {
         return "{$this->prenom} {$this->name}";
     }
->>>>>>> d5a2808 (add Niveau, Tentative and update User models)
+
 }
