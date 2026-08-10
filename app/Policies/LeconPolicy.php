@@ -19,16 +19,16 @@ class LeconPolicy
 
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isFormateur() || $user->isAdmin();
     }
 
     public function update(User $user, Lecon $lecon): bool
     {
-        return $user->isAdmin();
+        return $user->isFormateur() || $user->isAdmin();
     }
 
     public function delete(User $user, Lecon $lecon): bool
     {
-        return $user->isAdmin();
+        return $user->isFormateur() || $user->isAdmin();
     }
 }
