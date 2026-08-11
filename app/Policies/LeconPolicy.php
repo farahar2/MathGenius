@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Lecon;
-use App\Models\User;
+use App\Policies\Concerns\ManagesContentAccess;
 
 class LeconPolicy
 {
+<<<<<<< Updated upstream
     public function viewAny(User $user): bool
     {
         return true;
@@ -31,4 +31,7 @@ class LeconPolicy
     {
         return $user->isAdmin();
     }
+=======
+    use ManagesContentAccess;
+>>>>>>> Stashed changes
 }

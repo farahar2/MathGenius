@@ -28,7 +28,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('lecons', LeconController::class)->except(['index']);
 });
 
+<<<<<<< Updated upstream
 Route::apiResource('chapitres', ChapitreController::class);
+=======
+Route::get('niveaux', [NiveauController::class, 'index']);
+Route::get('niveaux/{niveau}', [NiveauController::class, 'show']);
+
+Route::get('chapitres', [ChapitreController::class, 'index']);
+Route::get('chapitres/{chapitre}', [ChapitreController::class, 'show']);
+
+Route::get('quiz', [QuizController::class, 'index']);
+Route::get('quiz/{quiz}', [QuizController::class, 'show']);
+
+Route::get('exercices', [ExerciceController::class, 'index']);
+Route::get('exercices/{exercice}', [ExerciceController::class, 'show']);
+
+Route::get('questions', [QuestionController::class, 'index']);
+Route::get('questions/{question}', [QuestionController::class, 'show']);
+>>>>>>> Stashed changes
 
 Route::get('lecons', [LeconController::class, 'index']);
 
