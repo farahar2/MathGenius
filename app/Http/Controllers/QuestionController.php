@@ -2,30 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Question\StoreQuestionRequest;
+use App\Http\Requests\Question\UpdateQuestionRequest;
+use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class QuestionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Question::query()
+        $questions = Question::query()
             ->when($request->has('id_quiz'), fn ($q) => $q->where('id_quiz', $request->integer('id_quiz')))
             ->orderBy('ordre')
             ->get();
+
+        return QuestionResource::collection($questions);
     }
 
-    public function indexByQuiz(Quiz $quiz)
+    public function indexByQuiz(Quiz $quiz): AnonymousResourceCollection
     {
-        return Question::where('id_quiz', $quiz->id)
+        $questions = Question::where('id_quiz', $quiz->id)
             ->orderBy('ordre')
             ->get();
+
+        return QuestionResource::collection($questions);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreQuestionRequest $request): JsonResponse
     {
+<<<<<<< Updated upstream
         $data = $request->validate([
             'question' => ['required', 'string'],
             'option_a' => ['required', 'string', 'max:500'],
@@ -38,17 +47,25 @@ class QuestionController extends Controller
             'ordre' => ['nullable', 'integer', 'min:0'],
             'id_quiz' => ['required', 'exists:quiz,id'],
         ]);
+=======
+        $this->authorize('create', Question::class);
 
-        return response()->json(Question::create($data), 201);
+        $question = Question::create($request->validated());
+>>>>>>> Stashed changes
+
+        return (new QuestionResource($question))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Question $question): JsonResponse
+    public function show(Question $question): QuestionResource
     {
-        return response()->json($question->load('quiz'));
+        return new QuestionResource($question->load('quiz'));
     }
 
-    public function update(Request $request, Question $question): JsonResponse
+    public function update(UpdateQuestionRequest $request, Question $question): QuestionResource
     {
+<<<<<<< Updated upstream
         $data = $request->validate([
             'question' => ['sometimes', 'string'],
             'option_a' => ['sometimes', 'string', 'max:500'],
@@ -61,10 +78,13 @@ class QuestionController extends Controller
             'ordre' => ['sometimes', 'integer', 'min:0'],
             'id_quiz' => ['sometimes', 'exists:quiz,id'],
         ]);
+=======
+        $this->authorize('update', $question);
 
-        $question->update($data);
+        $question->update($request->validated());
+>>>>>>> Stashed changes
 
-        return response()->json($question);
+        return new QuestionResource($question);
     }
 
     public function destroy(Question $question): JsonResponse

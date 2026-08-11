@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Quiz\StoreQuizRequest;
+use App\Http\Requests\Quiz\UpdateQuizRequest;
+use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class QuizController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Quiz::query()
+        $quiz = Quiz::query()
             ->when($request->has('id_lecon'), fn ($q) => $q->where('id_lecon', $request->integer('id_lecon')))
             ->when($request->has('id_chapitre'), fn ($q) => $q->where('id_chapitre', $request->integer('id_chapitre')))
             ->get();
+
+        return QuizResource::collection($quiz);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreQuizRequest $request): JsonResponse
     {
+<<<<<<< Updated upstream
         $data = $request->validate([
             'id_lecon' => ['required', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -25,17 +32,25 @@ class QuizController extends Controller
             'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
             'duree_secondes' => ['nullable', 'integer', 'min:0'],
         ]);
+=======
+        $this->authorize('create', Quiz::class);
 
-        return response()->json(Quiz::create($data), 201);
+        $quiz = Quiz::create($request->validated());
+>>>>>>> Stashed changes
+
+        return (new QuizResource($quiz))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Quiz $quiz): JsonResponse
+    public function show(Quiz $quiz): QuizResource
     {
-        return response()->json($quiz->load(['lecon', 'questions']));
+        return new QuizResource($quiz->load(['lecon', 'questions']));
     }
 
-    public function update(Request $request, Quiz $quiz): JsonResponse
+    public function update(UpdateQuizRequest $request, Quiz $quiz): QuizResource
     {
+<<<<<<< Updated upstream
         $data = $request->validate([
             'id_lecon' => ['sometimes', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -43,10 +58,13 @@ class QuizController extends Controller
             'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
             'duree_secondes' => ['sometimes', 'integer', 'min:0'],
         ]);
+=======
+        $this->authorize('update', $quiz);
 
-        $quiz->update($data);
+        $quiz->update($request->validated());
+>>>>>>> Stashed changes
 
-        return response()->json($quiz);
+        return new QuizResource($quiz);
     }
 
     public function destroy(Quiz $quiz): JsonResponse

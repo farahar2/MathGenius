@@ -2,51 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Exercice\StoreExerciceRequest;
+use App\Http\Requests\Exercice\UpdateExerciceRequest;
+use App\Http\Resources\ExerciceResource;
 use App\Models\Exercice;
 use App\Models\Lecon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ExerciceController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Exercice::query()
+        $exercices = Exercice::query()
             ->when($request->has('id_lecon'), fn ($q) => $q->where('id_lecon', $request->integer('id_lecon')))
             ->orderBy('ordre')
             ->get();
+
+        return ExerciceResource::collection($exercices);
     }
 
-    public function indexByLecon(Lecon $lecon)
+    public function indexByLecon(Lecon $lecon): AnonymousResourceCollection
     {
-        return Exercice::where('id_lecon', $lecon->id)
+        $exercices = Exercice::where('id_lecon', $lecon->id)
             ->orderBy('ordre')
             ->get();
+
+        return ExerciceResource::collection($exercices);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreExerciceRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'titre' => ['required', 'string'],
-            'enonce' => ['required', 'string'],
-            'correction' => ['required', 'string'],
-            'image' => ['nullable', 'string'],
-            'fichier_pdf' => ['nullable', 'string'],
-            'ordre' => ['nullable', 'integer', 'min:0'],
-            'is_published' => ['nullable', 'boolean'],
-            'id_lecon' => ['required', 'exists:lecons,id'],
-        ]);
+        $this->authorize('create', Exercice::class);
 
-        return response()->json(Exercice::create($data), 201);
+        $exercice = Exercice::create($request->validated());
+
+        return (new ExerciceResource($exercice))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Exercice $exercice): JsonResponse
+    public function show(Exercice $exercice): ExerciceResource
     {
-        return response()->json($exercice->load('lecon'));
+        return new ExerciceResource($exercice->load('lecon'));
     }
 
-    public function update(Request $request, Exercice $exercice): JsonResponse
+    public function update(UpdateExerciceRequest $request, Exercice $exercice): ExerciceResource
     {
+<<<<<<< Updated upstream
         $data = $request->validate([
             'titre' => ['sometimes', 'string'],
             'enonce' => ['sometimes', 'string'],
@@ -57,10 +61,13 @@ class ExerciceController extends Controller
             'is_published' => ['sometimes', 'boolean'],
             'id_lecon' => ['sometimes', 'exists:lecons,id'],
         ]);
+=======
+        $this->authorize('update', $exercice);
 
-        $exercice->update($data);
+        $exercice->update($request->validated());
+>>>>>>> Stashed changes
 
-        return response()->json($exercice);
+        return new ExerciceResource($exercice);
     }
 
     public function destroy(Exercice $exercice): JsonResponse
