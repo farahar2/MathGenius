@@ -11,8 +11,8 @@ use App\Http\Controllers\RecommandationController;
 use App\Http\Controllers\TentativeController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('quiz', QuizController::class)->except(['index', 'show']);
     Route::apiResource('exercices', ExerciceController::class)->except(['index', 'show']);
     Route::apiResource('questions', QuestionController::class)->except(['index', 'show']);
+    Route::apiResource('lecons', LeconController::class)->except(['index']);
 });
 
 Route::get('niveaux', [NiveauController::class, 'index']);
@@ -36,8 +37,11 @@ Route::get('chapitres/{chapitre}', [ChapitreController::class, 'show']);
 Route::get('quiz', [QuizController::class, 'index']);
 Route::get('quiz/{quiz}', [QuizController::class, 'show']);
 
+
 Route::get('exercices/{exercice}', [ExerciceController::class, 'show']);
 Route::get('questions/{question}', [QuestionController::class, 'show']);
+
+Route::get('lecons', [LeconController::class, 'index']);
 
 Route::get('chapitres/{chapitre}/lecons', [LeconController::class, 'indexByChapitre'])
     ->name('chapitres.lecons.index');
@@ -49,6 +53,7 @@ Route::get('quiz/{quiz}/questions', [QuestionController::class, 'indexByQuiz'])
     ->name('quiz.questions.index');
 
 Route::apiResource('lecons', LeconController::class)->except(['index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tentatives', TentativeController::class)->except(['update']);

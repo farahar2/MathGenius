@@ -2,30 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Tentative\StoreTentativeRequest;
+use App\Http\Resources\TentativeResource;
 use App\Models\Quiz;
 use App\Models\Tentative;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TentativeController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Tentative::query()
+        $tentatives = Tentative::query()
             ->when($request->has('id_quiz'), fn ($q) => $q->where('id_quiz', $request->integer('id_quiz')))
             ->when($request->user(), fn ($q) => $q->where('id_utilisateur', $request->user()->id))
             ->orderByDesc('created_at')
             ->get();
+
+        return TentativeResource::collection($tentatives);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreTentativeRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'id_quiz' => ['required', 'exists:quiz,id'],
-            'reponses' => ['required', 'array'],
-            'reponses.*.id_question' => ['required', 'exists:questions,id'],
-            'reponses.*.reponse_eleve' => ['required', 'in:A,B,C,D'],
-        ]);
+        $this->authorize('create', Tentative::class);
+
+        $data = $request->validated();
 
         $quiz = Quiz::with('questions')->findOrFail($data['id_quiz']);
         $total = $quiz->questions->count();
@@ -55,16 +57,22 @@ class TentativeController extends Controller
             $tentative->reponses()->create($reponse);
         }
 
-        return response()->json($tentative->load('reponses'), 201);
+        return (new TentativeResource($tentative->load('reponses')))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function show(Tentative $tentative): JsonResponse
+    public function show(Tentative $tentative): TentativeResource
     {
-        return response()->json($tentative->load(['quiz.questions', 'reponses']));
+        $this->authorize('view', $tentative);
+
+        return new TentativeResource($tentative->load(['quiz.questions', 'reponses']));
     }
 
     public function destroy(Tentative $tentative): JsonResponse
     {
+        $this->authorize('delete', $tentative);
+
         $tentative->delete();
 
         return response()->json(null, 204);
