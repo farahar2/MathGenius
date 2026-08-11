@@ -34,7 +34,8 @@ class QuestionController extends Controller
 
     public function store(StoreQuestionRequest $request): JsonResponse
     {
-<<<<<<< Updated upstream
+        $this->authorize('create', Question::class);
+
         $data = $request->validate([
             'question' => ['required', 'string'],
             'option_a' => ['required', 'string', 'max:500'],
@@ -47,11 +48,11 @@ class QuestionController extends Controller
             'ordre' => ['nullable', 'integer', 'min:0'],
             'id_quiz' => ['required', 'exists:quiz,id'],
         ]);
-=======
+
         $this->authorize('create', Question::class);
 
         $question = Question::create($request->validated());
->>>>>>> Stashed changes
+
 
         return (new QuestionResource($question))
             ->response()
@@ -65,7 +66,8 @@ class QuestionController extends Controller
 
     public function update(UpdateQuestionRequest $request, Question $question): QuestionResource
     {
-<<<<<<< Updated upstream
+        $this->authorize('update', $question);
+
         $data = $request->validate([
             'question' => ['sometimes', 'string'],
             'option_a' => ['sometimes', 'string', 'max:500'],
@@ -78,17 +80,18 @@ class QuestionController extends Controller
             'ordre' => ['sometimes', 'integer', 'min:0'],
             'id_quiz' => ['sometimes', 'exists:quiz,id'],
         ]);
-=======
+
         $this->authorize('update', $question);
 
         $question->update($request->validated());
->>>>>>> Stashed changes
 
         return new QuestionResource($question);
     }
 
     public function destroy(Question $question): JsonResponse
     {
+        $this->authorize('delete', $question);
+
         $question->delete();
 
         return response()->json(null, 204);

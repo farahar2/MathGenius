@@ -23,16 +23,17 @@ class NiveauController extends Controller
 
     public function store(StoreNiveauRequest $request): NiveauResource
     {
-<<<<<<< Updated upstream
+        $this->authorize('create', Niveau::class);
+
         $data = $request->validate([
             'nom' => ['required', 'string', 'max:100'],
             'ordre' => ['nullable', 'integer', 'min:0'],
         ]);
-=======
+
         $this->authorize('create', Niveau::class);
 
         $niveau = Niveau::create($request->validated());
->>>>>>> Stashed changes
+
 
         return new NiveauResource($niveau);
     }
@@ -44,22 +45,24 @@ class NiveauController extends Controller
 
     public function update(UpdateNiveauRequest $request, Niveau $niveau): NiveauResource
     {
-<<<<<<< Updated upstream
+        $this->authorize('update', $niveau);
+
         $data = $request->validate([
             'nom' => ['sometimes', 'string', 'max:100'],
             'ordre' => ['sometimes', 'integer', 'min:0'],
         ]);
-=======
+
         $this->authorize('update', $niveau);
 
         $niveau->update($request->validated());
->>>>>>> Stashed changes
 
         return new NiveauResource($niveau);
     }
 
     public function destroy(Niveau $niveau): JsonResponse
     {
+        $this->authorize('delete', $niveau);
+
         $niveau->delete();
 
         return response()->json(null, 204);

@@ -24,7 +24,8 @@ class QuizController extends Controller
 
     public function store(StoreQuizRequest $request): JsonResponse
     {
-<<<<<<< Updated upstream
+        $this->authorize('create', Quiz::class);
+
         $data = $request->validate([
             'id_lecon' => ['required', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -32,11 +33,10 @@ class QuizController extends Controller
             'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
             'duree_secondes' => ['nullable', 'integer', 'min:0'],
         ]);
-=======
+
         $this->authorize('create', Quiz::class);
 
         $quiz = Quiz::create($request->validated());
->>>>>>> Stashed changes
 
         return (new QuizResource($quiz))
             ->response()
@@ -50,7 +50,8 @@ class QuizController extends Controller
 
     public function update(UpdateQuizRequest $request, Quiz $quiz): QuizResource
     {
-<<<<<<< Updated upstream
+        $this->authorize('update', $quiz);
+
         $data = $request->validate([
             'id_lecon' => ['sometimes', 'exists:lecons,id'],
             'id_chapitre' => ['nullable', 'exists:chapitres,id'],
@@ -58,17 +59,19 @@ class QuizController extends Controller
             'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
             'duree_secondes' => ['sometimes', 'integer', 'min:0'],
         ]);
-=======
+
         $this->authorize('update', $quiz);
 
         $quiz->update($request->validated());
->>>>>>> Stashed changes
+
 
         return new QuizResource($quiz);
     }
 
     public function destroy(Quiz $quiz): JsonResponse
     {
+        $this->authorize('delete', $quiz);
+
         $quiz->delete();
 
         return response()->json(null, 204);
