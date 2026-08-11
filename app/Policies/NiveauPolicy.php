@@ -2,17 +2,17 @@
 
 namespace App\Policies;
 
-use App\Models\Lecon;
+use App\Models\Niveau;
 use App\Models\User;
 
-class LeconPolicy
+class NiveauPolicy
 {
     public function viewAny(User $user): bool
     {
         return true;
     }
 
-    public function view(User $user, Lecon $lecon): bool
+    public function view(User $user, Niveau $niveau): bool
     {
         return true;
     }
@@ -22,12 +22,12 @@ class LeconPolicy
         return $user->isFormateur() || $user->isAdmin();
     }
 
-    public function update(User $user, Lecon $lecon): bool
+    public function update(User $user, Niveau $niveau): bool
     {
         return $user->isFormateur() || $user->isAdmin();
     }
 
-    public function delete(User $user, Lecon $lecon): bool
+    public function delete(User $user, Niveau $niveau): bool
     {
         return $user->isFormateur() || $user->isAdmin();
     }

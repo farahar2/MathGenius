@@ -28,22 +28,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('lecons', LeconController::class)->except(['index']);
 });
 
-Route::apiResource('chapitres', ChapitreController::class);
+Route::get('niveaux', [NiveauController::class, 'index']);
+Route::get('niveaux/{niveau}', [NiveauController::class, 'show']);
+
+Route::get('chapitres', [ChapitreController::class, 'index']);
+Route::get('chapitres/{chapitre}', [ChapitreController::class, 'show']);
+
+Route::get('quiz', [QuizController::class, 'index']);
+Route::get('quiz/{quiz}', [QuizController::class, 'show']);
+
+
+Route::get('exercices/{exercice}', [ExerciceController::class, 'show']);
+Route::get('questions/{question}', [QuestionController::class, 'show']);
 
 Route::get('lecons', [LeconController::class, 'index']);
 
 Route::get('chapitres/{chapitre}/lecons', [LeconController::class, 'indexByChapitre'])
     ->name('chapitres.lecons.index');
 
-Route::apiResource('lecons', LeconController::class)->except(['index']);
-
 Route::get('lecons/{lecon}/exercices', [ExerciceController::class, 'indexByLecon'])
     ->name('lecons.exercices.index');
 
-Route::apiResource('quiz', QuizController::class);
-
 Route::get('quiz/{quiz}/questions', [QuestionController::class, 'indexByQuiz'])
     ->name('quiz.questions.index');
+
+Route::apiResource('lecons', LeconController::class)->except(['index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tentatives', TentativeController::class)->except(['update']);
