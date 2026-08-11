@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->role === 'student';
     }
 
+    public function isFormateur(): bool
+    {
+        return $this->role === 'formateur';
+    }
+
     public function fullName(): string
     {
         return "{$this->prenom} {$this->name}";

@@ -15,10 +15,10 @@ class ChapitreResource extends JsonResource
             'description' => $this->description,
             'ordre'       => $this->ordre,
             'is_published'=> $this->is_published,
-            'id_filiere'  => $this->id_filiere,
-            'filiere'     => $this->whenLoaded('filiere', fn () => [
-                'id'  => $this->filiere?->id,
-                'nom' => $this->filiere?->nom,
+            'id_niveau'   => $this->id_niveau,
+            'niveau'      => $this->whenLoaded('niveau', fn () => [
+                'id'  => $this->niveau?->id,
+                'nom' => $this->niveau?->nom,
             ]),
             'created_at'  => $this->created_at,
             'updated_at'  => $this->updated_at,
