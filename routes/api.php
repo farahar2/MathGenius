@@ -19,9 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 });
 
-<<<<<<< Updated upstream
-Route::apiResource('niveaux', NiveauController::class);
-=======
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('niveaux', NiveauController::class)->except(['index', 'show']);
     Route::apiResource('chapitres', ChapitreController::class)->except(['index', 'show']);
@@ -30,7 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('questions', QuestionController::class)->except(['index', 'show']);
     Route::apiResource('lecons', LeconController::class)->except(['index']);
 });
->>>>>>> Stashed changes
 
 Route::apiResource('chapitres', ChapitreController::class);
 
@@ -49,12 +45,6 @@ Route::apiResource('quiz', QuizController::class);
 Route::get('quiz/{quiz}/questions', [QuestionController::class, 'indexByQuiz'])
     ->name('quiz.questions.index');
 
-<<<<<<< Updated upstream
-Route::apiResource('exercices', ExerciceController::class)->except(['index']);
-Route::apiResource('questions', QuestionController::class)->except(['index']);
-
-=======
->>>>>>> Stashed changes
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tentatives', TentativeController::class)->except(['update']);
     Route::apiResource('recommandations', RecommandationController::class)->except(['show']);

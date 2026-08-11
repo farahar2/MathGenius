@@ -34,24 +34,9 @@ class QuestionController extends Controller
 
     public function store(StoreQuestionRequest $request): JsonResponse
     {
-<<<<<<< Updated upstream
-        $data = $request->validate([
-            'question' => ['required', 'string'],
-            'option_a' => ['required', 'string', 'max:500'],
-            'option_b' => ['required', 'string', 'max:500'],
-            'option_c' => ['required', 'string', 'max:500'],
-            'option_d' => ['required', 'string', 'max:500'],
-            'bonne_reponse' => ['required', 'in:A,B,C,D'],
-            'explication' => ['nullable', 'string'],
-            'notion' => ['nullable', 'string'],
-            'ordre' => ['nullable', 'integer', 'min:0'],
-            'id_quiz' => ['required', 'exists:quiz,id'],
-        ]);
-=======
         $this->authorize('create', Question::class);
 
         $question = Question::create($request->validated());
->>>>>>> Stashed changes
 
         return (new QuestionResource($question))
             ->response()
@@ -65,24 +50,9 @@ class QuestionController extends Controller
 
     public function update(UpdateQuestionRequest $request, Question $question): QuestionResource
     {
-<<<<<<< Updated upstream
-        $data = $request->validate([
-            'question' => ['sometimes', 'string'],
-            'option_a' => ['sometimes', 'string', 'max:500'],
-            'option_b' => ['sometimes', 'string', 'max:500'],
-            'option_c' => ['sometimes', 'string', 'max:500'],
-            'option_d' => ['sometimes', 'string', 'max:500'],
-            'bonne_reponse' => ['sometimes', 'in:A,B,C,D'],
-            'explication' => ['nullable', 'string'],
-            'notion' => ['nullable', 'string'],
-            'ordre' => ['sometimes', 'integer', 'min:0'],
-            'id_quiz' => ['sometimes', 'exists:quiz,id'],
-        ]);
-=======
         $this->authorize('update', $question);
 
         $question->update($request->validated());
->>>>>>> Stashed changes
 
         return new QuestionResource($question);
     }
