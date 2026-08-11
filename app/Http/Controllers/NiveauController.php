@@ -25,15 +25,7 @@ class NiveauController extends Controller
     {
         $this->authorize('create', Niveau::class);
 
-        $data = $request->validate([
-            'nom' => ['required', 'string', 'max:100'],
-            'ordre' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $this->authorize('create', Niveau::class);
-
         $niveau = Niveau::create($request->validated());
-
 
         return new NiveauResource($niveau);
     }
@@ -45,13 +37,6 @@ class NiveauController extends Controller
 
     public function update(UpdateNiveauRequest $request, Niveau $niveau): NiveauResource
     {
-        $this->authorize('update', $niveau);
-
-        $data = $request->validate([
-            'nom' => ['sometimes', 'string', 'max:100'],
-            'ordre' => ['sometimes', 'integer', 'min:0'],
-        ]);
-
         $this->authorize('update', $niveau);
 
         $niveau->update($request->validated());

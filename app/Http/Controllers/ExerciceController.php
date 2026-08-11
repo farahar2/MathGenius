@@ -36,16 +36,7 @@ class ExerciceController extends Controller
     {
         $this->authorize('create', Exercice::class);
 
-        $data = $request->validate([
-            'titre' => ['required', 'string'],
-            'enonce' => ['required', 'string'],
-            'correction' => ['required', 'string'],
-            'image' => ['nullable', 'string'],
-            'fichier_pdf' => ['nullable', 'string'],
-            'ordre' => ['nullable', 'integer', 'min:0'],
-            'is_published' => ['nullable', 'boolean'],
-            'id_lecon' => ['required', 'exists:lecons,id'],
-        ]);
+        $exercice = Exercice::create($request->validated());
 
         return (new ExerciceResource($exercice))
             ->response()
@@ -59,19 +50,6 @@ class ExerciceController extends Controller
 
     public function update(UpdateExerciceRequest $request, Exercice $exercice): ExerciceResource
     {
-        $this->authorize('update', $exercice);
-
-        $data = $request->validate([
-            'titre' => ['sometimes', 'string'],
-            'enonce' => ['sometimes', 'string'],
-            'correction' => ['sometimes', 'string'],
-            'image' => ['nullable', 'string'],
-            'fichier_pdf' => ['nullable', 'string'],
-            'ordre' => ['sometimes', 'integer', 'min:0'],
-            'is_published' => ['sometimes', 'boolean'],
-            'id_lecon' => ['sometimes', 'exists:lecons,id'],
-        ]);
-
         $this->authorize('update', $exercice);
 
         $exercice->update($request->validated());

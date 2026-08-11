@@ -26,16 +26,6 @@ class QuizController extends Controller
     {
         $this->authorize('create', Quiz::class);
 
-        $data = $request->validate([
-            'id_lecon' => ['required', 'exists:lecons,id'],
-            'id_chapitre' => ['nullable', 'exists:chapitres,id'],
-            'difficulte' => ['nullable', 'in:facile,moyen,difficile'],
-            'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
-            'duree_secondes' => ['nullable', 'integer', 'min:0'],
-        ]);
-
-        $this->authorize('create', Quiz::class);
-
         $quiz = Quiz::create($request->validated());
 
         return (new QuizResource($quiz))
@@ -52,18 +42,7 @@ class QuizController extends Controller
     {
         $this->authorize('update', $quiz);
 
-        $data = $request->validate([
-            'id_lecon' => ['sometimes', 'exists:lecons,id'],
-            'id_chapitre' => ['nullable', 'exists:chapitres,id'],
-            'difficulte' => ['sometimes', 'in:facile,moyen,difficile'],
-            'niveau' => ['nullable', 'in:debutant,intermediaire,avance'],
-            'duree_secondes' => ['sometimes', 'integer', 'min:0'],
-        ]);
-
-        $this->authorize('update', $quiz);
-
         $quiz->update($request->validated());
-
 
         return new QuizResource($quiz);
     }
