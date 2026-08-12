@@ -70,4 +70,23 @@ class RegisterTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['password']);
     }
+
+    public function test_client_role_is_ignored_and_forced_to_student(): void
+    {
+        $response = $this->postJson('/api/register', [
+            'name'                  => 'Dupont',
+            'prenom'                => 'Jean',
+            'email'                 => 'jean@example.com',
+            'password'              => 'password123',
+            'password_confirmation' => 'password123',
+            'role'                  => 'admin',
+        ]);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'jean@example.com',
+            'role'  => 'student',
+        ]);
+    }
 }

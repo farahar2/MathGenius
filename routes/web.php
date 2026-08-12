@@ -1,11 +1,5 @@
 <?php
 
-<<<<<<< Updated upstream
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-=======
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\MarketingController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +18,13 @@ Route::prefix('app')->name('app.')->group(function () {
     Route::get('/resultats/{tentative}', [AppController::class, 'resultShow'])->name('results.show');
     Route::get('/profil', [AppController::class, 'profile'])->name('profile');
     Route::get('/admin', [AppController::class, 'admin'])->name('admin');
->>>>>>> Stashed changes
 });
+
+use App\Http\Controllers\MarketingController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [MarketingController::class, 'landing'])->name('landing');
+Route::get('/login', [MarketingController::class, 'showLogin'])->name('login');
+Route::get('/register', [MarketingController::class, 'showRegister'])->name('register');
+Route::get('/app/dashboard', [MarketingController::class, 'dashboard'])->name('app.dashboard');
+

@@ -10,16 +10,16 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('prenom', 100)->after('name');
-            $table->enum('role', ['student', 'admin'])
+            $table->enum('role', ['student', 'formateur'])
                   ->default('student')
                   ->after('prenom');
             $table->boolean('is_premium')
                   ->default(false)
                   ->after('role');
-            $table->foreignId('filiere_id')
+            $table->foreignId('niveau_id')
                   ->nullable()
                   ->after('is_premium')
-                  ->constrained('filieres')
+                  ->constrained('niveaux')
                   ->nullOnDelete();
         });
     }
@@ -27,12 +27,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['filiere_id']);
+            $table->dropForeign(['niveau_id']);
             $table->dropColumn([
                 'prenom',
                 'role',
                 'is_premium',
-                'filiere_id',
+                'niveau_id',
             ]);
         });
     }

@@ -18,8 +18,7 @@ class RegisterRequest extends FormRequest
             'prenom'     => ['required', 'string', 'max:100'],
             'email'      => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password'   => ['required', 'string', 'min:8', 'confirmed'],
-            'role'       => ['sometimes', 'string', 'in:student,admin'],
-            'niveau_id' => ['sometimes', 'integer', 'exists:niveaux,id'],
+            'niveau_id'  => ['sometimes', 'integer', 'exists:niveaux,id'],
         ];
     }
 }

@@ -15,7 +15,6 @@ class TentativeController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $tentatives = Tentative::query()
-            ->with('quiz.lecon')
             ->when($request->has('id_quiz'), fn ($q) => $q->where('id_quiz', $request->integer('id_quiz')))
             ->when($request->user(), fn ($q) => $q->where('id_utilisateur', $request->user()->id))
             ->orderByDesc('created_at')
