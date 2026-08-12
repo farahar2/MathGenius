@@ -53,17 +53,10 @@ Route::get('lecons/{lecon}/exercices', [ExerciceController::class, 'indexByLecon
 
 Route::get('quiz/{quiz}/questions', [QuestionController::class, 'indexByQuiz'])
     ->name('quiz.questions.index');
-Route::apiResource('lecons', LeconController::class)->except(['index']);
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tentatives', TentativeController::class)->except(['update']);
     Route::apiResource('recommandations', RecommandationController::class)->except(['show']);
     Route::apiResource('users', UserController::class)->except(['show']);
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('tentatives', TentativeController::class)->except(['update']);
-    Route::apiResource('recommandations', RecommandationController::class)->except(['show']);
 });
 
