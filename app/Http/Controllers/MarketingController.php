@@ -35,9 +35,4 @@ class MarketingController extends Controller
     {
         return view('pages.auth', ['mode' => 'register']);
     }
-
-    public function dashboard(): View
-    {
-        return view('pages.dashboard-stub');
-    }
 }
