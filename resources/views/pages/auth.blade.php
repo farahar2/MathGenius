@@ -24,7 +24,7 @@
                 <p class="mt-4 max-w-md text-[15.5px] leading-relaxed text-[#5C667E]">L'IA analyse chaque erreur, situe ton niveau et construit ton plan de révision chapitre par chapitre.</p>
             </div>
 
-            <div class="mg-mono relative text-[11px] text-[#9AA3B8]">AUTHENTIFICATION SÉCURISÉE · LARAVEL SANCTUM</div>
+            <div class="mg-mono relative text-[11px] text-[#9AA3B8]">CONNEXION SÉCURISÉE ET CHIFFRÉE</div>
         </div>
 
         {{-- Right panel --}}

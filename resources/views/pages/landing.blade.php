@@ -72,22 +72,6 @@
         </div>
     </section>
 
-    {{-- Ticker --}}
-    <div class="overflow-hidden border-y border-[#E4E7EF] bg-white py-3.5">
-        @php
-            $stack = ['LARAVEL 13', 'SANCTUM', 'MYSQL', 'GROQ', 'PEST', 'DOCKER', 'GITHUB ACTIONS'];
-        @endphp
-        <div class="mg-ticker-track flex w-[200%]">
-            @for ($i = 0; $i < 2; $i++)
-                <div class="mg-mono flex w-1/2 shrink-0 items-center gap-11 whitespace-nowrap text-[13px] text-[#9AA3B8]">
-                    @foreach ($stack as $tech)
-                        <span>{{ $tech }}</span><span>·</span>
-                    @endforeach
-                </div>
-            @endfor
-        </div>
-    </div>
-
     {{-- How it works --}}
     <section id="comment-ca-marche" class="mx-auto max-w-6xl px-6 py-28 sm:px-10">
         <div class="mg-mono text-[11.5px] tracking-[.14em] text-[#7C5CFF]">01 — COMMENT ÇA MARCHE</div>
@@ -110,7 +94,7 @@
     {{-- Features --}}
     <section class="mx-auto max-w-6xl px-6 pb-28 sm:px-10">
         <div class="mg-mono text-[11.5px] tracking-[.14em] text-[#7C5CFF]">02 — FONCTIONNALITÉS</div>
-        <h2 class="mt-3 text-4xl font-semibold tracking-tight text-[#12161F] sm:text-5xl">Tout le cahier des charges, livré</h2>
+        <h2 class="mt-3 text-4xl font-semibold tracking-tight text-[#12161F] sm:text-5xl">Tout ce qu'il te faut pour progresser</h2>
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($features as $feature)
@@ -133,9 +117,8 @@
             </a>
         </div>
 
-        <div class="mg-mono mt-10 flex flex-col justify-between gap-2 text-[11.5px] text-[#9AA3B8] sm:flex-row">
-            <div>MATHGENIUS © {{ now()->year }} — PROJET DE FIN DE FORMATION</div>
-            <div>BACKEND DEVELOPER LARAVEL AI AUGMENTED</div>
+        <div class="mg-mono mt-10 text-center text-[11.5px] text-[#9AA3B8]">
+            <div>MATHGENIUS © {{ now()->year }} — TOUS DROITS RÉSERVÉS</div>
         </div>
     </section>
 @endsection

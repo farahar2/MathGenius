@@ -9,10 +9,19 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\RecommandationController;
 use App\Http\Controllers\TentativeController;
+use App\Http\Controllers\UserController;
+
+Route::post('register', [AuthController::class, 'register'])->middleware('throttle:register')->name('register');
+Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('me', [AuthController::class, 'me'])->name('me');
+    Route::put('me', [AuthController::class, 'updateMe'])->name('me.update');
+
     Route::apiResource('niveaux', NiveauController::class)->except(['index', 'show']);
     Route::apiResource('chapitres', ChapitreController::class)->except(['index', 'show']);
+    Route::post('quiz/generate', [QuizController::class, 'generate'])->name('quiz.generate');
     Route::apiResource('quiz', QuizController::class)->except(['index', 'show']);
     Route::apiResource('exercices', ExerciceController::class)->except(['index', 'show']);
     Route::apiResource('questions', QuestionController::class)->except(['index', 'show']);
