@@ -82,7 +82,7 @@ class ContentProtectionTest extends TestCase
 
         $this->actingAs($formateur)->putJson("/api/quiz/{$quiz->id}", ['difficulte' => 'difficile'])
             ->assertStatus(200)
-            ->assertJsonPath('difficulte', 'difficile');
+            ->assertJsonPath('data.difficulte', 'difficile');
     }
 
     public function test_student_cannot_delete_quiz(): void
