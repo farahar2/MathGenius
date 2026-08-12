@@ -18,7 +18,7 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->isAdmin();
     }
 
     public function update(User $user, User $model): bool

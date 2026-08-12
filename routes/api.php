@@ -9,15 +9,6 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\RecommandationController;
 use App\Http\Controllers\TentativeController;
-use Illuminate\Support\Facades\Route;
-
-Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
-});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('niveaux', NiveauController::class)->except(['index', 'show']);
@@ -53,8 +44,17 @@ Route::get('lecons/{lecon}/exercices', [ExerciceController::class, 'indexByLecon
 
 Route::get('quiz/{quiz}/questions', [QuestionController::class, 'indexByQuiz'])
     ->name('quiz.questions.index');
+Route::apiResource('lecons', LeconController::class)->except(['index']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('tentatives', TentativeController::class)->except(['update']);
+    Route::apiResource('recommandations', RecommandationController::class)->except(['show']);
+    Route::apiResource('users', UserController::class)->except(['show']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tentatives', TentativeController::class)->except(['update']);
     Route::apiResource('recommandations', RecommandationController::class)->except(['show']);
 });
+
