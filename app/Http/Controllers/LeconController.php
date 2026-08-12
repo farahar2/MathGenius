@@ -23,7 +23,9 @@ class LeconController extends Controller
         $this->authorize('viewAny', Lecon::class);
 
         $lecons = Lecon::query()
+            ->visibleTo($request->user())
             ->when($request->has('id_chapitre'), fn ($q) => $q->where('id_chapitre', $request->integer('id_chapitre')))
+            ->with('chapitre')
             ->orderBy('ordre')
             ->get();
 
@@ -35,11 +37,14 @@ class LeconController extends Controller
      *
      * @group Leçons
      */
-    public function indexByChapitre(Chapitre $chapitre): AnonymousResourceCollection
+    public function indexByChapitre(Request $request, Chapitre $chapitre): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Lecon::class);
 
-        $lecons = $chapitre->lecons()->orderBy('ordre')->get();
+        $lecons = $chapitre->lecons()
+            ->visibleTo($request->user())
+            ->orderBy('ordre')
+            ->get();
 
         return LeconResource::collection($lecons);
     }
@@ -63,9 +68,11 @@ class LeconController extends Controller
      *
      * @group Leçons
      */
-    public function show(Lecon $lecon): LeconResource
+    public function show(Request $request, Lecon $lecon): LeconResource
     {
         $this->authorize('view', $lecon);
+
+        abort_unless($lecon->isVisibleTo($request->user()), 404);
 
         return new LeconResource($lecon);
     }

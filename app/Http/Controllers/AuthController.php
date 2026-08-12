@@ -7,16 +7,37 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
     public function __construct(
         private readonly RegisterUserAction $registerUserAction,
     ) {}
+
+    /**
+     * Ouvre également une session web pour l'utilisateur.
+     *
+     * Le frontend consomme l'API avec un token Bearer, mais les pages
+     * `/app/*` sont protégées par le middleware `auth` : elles ont donc
+     * besoin d'une session. Les requêtes purement API (tests, clients
+     * tiers) n'ont pas de session — d'où la garde `hasSession()`.
+     */
+    private function startWebSession(Request $request, User $user): void
+    {
+        if (! $request->hasSession()) {
+            return;
+        }
+
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
+    }
 
     /**
      * Inscription
@@ -30,7 +51,6 @@ class AuthController extends Controller
      * @bodyParam email string required L'adresse email. Example: jean@example.com
      * @bodyParam password string required Le mot de passe (min 8 caractères). Example: secret1234
      * @bodyParam password_confirmation string required Confirmation du mot de passe. Example: secret1234
-     * @bodyParam role string Le rôle (student par défaut). Example: student
      * @bodyParam niveau_id int L'identifiant du niveau. Example: 1
      *
      * @response 201 {
@@ -41,6 +61,8 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = $this->registerUserAction->execute($request->validated());
+
+        $this->startWebSession($request, $user);
 
         return response()->json([
             'user'  => UserResource::make($user),
@@ -70,13 +92,15 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
+
+        $this->startWebSession($request, $user);
 
         return response()->json([
             'user'  => UserResource::make($user),
@@ -96,7 +120,20 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        // Sur une requête authentifiée par session, currentAccessToken()
+        // renvoie un TransientToken qui n'est pas persisté et n'a pas de
+        // delete() : seuls les vrais tokens sont révoqués.
+        $token = $request->user()->currentAccessToken();
+
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
+
+        if ($request->hasSession()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return response()->json(null, 204);
     }

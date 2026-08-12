@@ -16,6 +16,7 @@ class ExerciceController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $exercices = Exercice::query()
+            ->visibleTo($request->user())
             ->when($request->has('id_lecon'), fn ($q) => $q->where('id_lecon', $request->integer('id_lecon')))
             ->orderBy('ordre')
             ->get();
@@ -23,9 +24,10 @@ class ExerciceController extends Controller
         return ExerciceResource::collection($exercices);
     }
 
-    public function indexByLecon(Lecon $lecon): AnonymousResourceCollection
+    public function indexByLecon(Request $request, Lecon $lecon): AnonymousResourceCollection
     {
         $exercices = Exercice::where('id_lecon', $lecon->id)
+            ->visibleTo($request->user())
             ->orderBy('ordre')
             ->get();
 
@@ -43,8 +45,10 @@ class ExerciceController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(Exercice $exercice): ExerciceResource
+    public function show(Request $request, Exercice $exercice): ExerciceResource
     {
+        abort_unless($exercice->isVisibleTo($request->user()), 404);
+
         return new ExerciceResource($exercice->load('lecon'));
     }
 

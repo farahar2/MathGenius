@@ -13,7 +13,9 @@ class ExerciceResource extends JsonResource
             'id'           => $this->id,
             'titre'        => $this->titre,
             'enonce'       => $this->enonce,
-            'correction'   => $this->correction,
+            // Le corrigé fait partie du contenu pédagogique destiné aux
+            // élèves, mais il n'a pas à être servi à des visiteurs anonymes.
+            'correction'   => $this->when($request->user() !== null, fn () => $this->correction),
             'image'        => $this->image,
             'fichier_pdf'  => $this->fichier_pdf,
             'ordre'        => $this->ordre,

@@ -11,13 +11,17 @@ use App\Http\Controllers\RecommandationController;
 use App\Http\Controllers\TentativeController;
 use App\Http\Controllers\UserController;
 
-Route::post('register', [AuthController::class, 'register'])->middleware('throttle:register')->name('register');
-Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
+// Noms préfixés `api.` : les noms nus `login` / `register` appartiennent
+// aux pages web. Sans ce préfixe, la dernière route enregistrée l'emporte
+// et `route('login')` renvoie vers POST api/login — ce qui casse à la fois
+// les liens des vues et la redirection du middleware `auth`.
+Route::post('register', [AuthController::class, 'register'])->middleware('throttle:register')->name('api.register');
+Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login')->name('api.login');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('me', [AuthController::class, 'me'])->name('me');
-    Route::put('me', [AuthController::class, 'updateMe'])->name('me.update');
+    Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
+    Route::get('me', [AuthController::class, 'me'])->name('api.me');
+    Route::put('me', [AuthController::class, 'updateMe'])->name('api.me.update');
 
     Route::apiResource('niveaux', NiveauController::class)->except(['index', 'show']);
     Route::apiResource('chapitres', ChapitreController::class)->except(['index', 'show']);

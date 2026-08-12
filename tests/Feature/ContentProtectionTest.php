@@ -165,10 +165,11 @@ class ContentProtectionTest extends TestCase
         $lecon = Lecon::find($quiz->id_lecon);
         $chapitre = $lecon->chapitre;
         $exercice = Exercice::create([
-            'titre'      => 'Exo',
-            'enonce'     => 'Énoncé',
-            'correction' => 'Correction',
-            'id_lecon'   => $lecon->id,
+            'titre'        => 'Exo',
+            'enonce'       => 'Énoncé',
+            'correction'   => 'Correction',
+            'is_published' => true,
+            'id_lecon'     => $lecon->id,
         ]);
         $question = Question::create([
             'question'      => 'Q ?',

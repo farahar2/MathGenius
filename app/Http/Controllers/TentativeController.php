@@ -14,9 +14,13 @@ class TentativeController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
+        // Filtre inconditionnel : un `when($request->user())` sauterait la
+        // restriction si la requête n'était pas authentifiée et renverrait
+        // les tentatives de tous les élèves.
         $tentatives = Tentative::query()
+            ->where('id_utilisateur', $request->user()->id)
             ->when($request->has('id_quiz'), fn ($q) => $q->where('id_quiz', $request->integer('id_quiz')))
-            ->when($request->user(), fn ($q) => $q->where('id_utilisateur', $request->user()->id))
+            ->with('quiz.lecon')
             ->orderByDesc('created_at')
             ->get();
 

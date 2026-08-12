@@ -18,12 +18,12 @@ L'IA analyse les performances après chaque quiz et recommande les chapitres à 
 
 | Couche | Technologie |
 |---|---|
-| Front-end | React.js |
+| Front-end | Blade + Tailwind CSS v4 + JS vanilla (Vite) |
 | Back-end | Laravel 13 |
 | API | REST API |
 | Auth | Laravel Sanctum |
 | Base de données | MySQL |
-| IA | SDK `laravel/ai` + Groq |
+| IA | SDK `laravel/ai` + Gemini |
 | Tests | Pest |
 | Conteneurisation | Docker + Docker Compose |
 | CI/CD | GitHub Actions |
@@ -35,14 +35,18 @@ L'IA analyse les performances après chaque quiz et recommande les chapitres à 
 ## Architecture
 
 ```
-Laravel API (REST)  ←→  React Frontend
+Laravel API (REST)  ←→  Frontend Blade (Vite, token Bearer)
         ↕
      MySQL
         ↕
-   Queue / Jobs / Worker  →  SDK laravel/ai  →  Groq
+   Queue `ai` / Jobs / Worker  →  SDK laravel/ai  →  Gemini
         ↕
   GitHub → GitHub Actions → Docker → Azure
 ```
+
+> Les jobs IA sont dispatchés sur la queue dédiée `ai`. Tout worker doit
+> donc être lancé avec `--queue=ai,default`, sinon les quiz ne seront
+> jamais générés.
 
 ---
 
@@ -151,7 +155,7 @@ app/
 
 - Tester : endpoints, validation, auth, autorisations, Jobs
 - `Queue::fake()` pour les jobs
-- IA mockée (ne jamais appeler Groq dans les tests)
+- IA mockée (ne jamais appeler le fournisseur IA dans les tests)
 - Vérifier la structure JSON des réponses
 - Nommage : `describe()->it()` ou `test()`
 
@@ -201,7 +205,7 @@ app/
 - Respecter la cohérence de l'architecture
 - Ne jamais créer plusieurs façons de résoudre le même problème
 - Toujours privilégier la solution la plus idiomatique Laravel
-- Ne jamais appeler Groq dans les tests
+- Ne jamais appeler le fournisseur IA dans les tests
 - IA toujours asynchrone (Job + Queue)
 - IA toujours en Structured Output
 - Toujours utiliser Form Requests, API Resources, Policies

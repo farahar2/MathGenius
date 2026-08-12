@@ -14,8 +14,10 @@ class RecommandationController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
+        // Filtre inconditionnel : cf. TentativeController::index.
         $recommandations = Recommandation::query()
-            ->when($request->user(), fn ($q) => $q->where('id_utilisateur', $request->user()->id))
+            ->where('id_utilisateur', $request->user()->id)
+            ->with('chapitre')
             ->orderByDesc('created_at')
             ->get();
 

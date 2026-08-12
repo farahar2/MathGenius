@@ -49,6 +49,14 @@ class User extends Authenticatable
         return $this->hasMany(Tentative::class, 'id_utilisateur');
     }
 
+    /**
+     * Get the AI recommendations addressed to the user.
+     */
+    public function recommandations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Recommandation::class, 'id_utilisateur');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

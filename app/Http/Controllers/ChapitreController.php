@@ -22,7 +22,9 @@ class ChapitreController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $chapitres = Chapitre::query()
+            ->visibleTo($request->user())
             ->when($request->has('id_niveau'), fn ($q) => $q->where('id_niveau', $request->integer('id_niveau')))
+            ->with('niveau')
             ->orderBy('ordre')
             ->get();
 
@@ -52,9 +54,11 @@ class ChapitreController extends Controller
      *
      * @response [{"id":1,"titre":"Chapitre 1","description":"...","ordre":1,"is_published":true,"id_niveau":1}]
      */
-    public function show(Chapitre $chapitre): ChapitreResource
+    public function show(Request $request, Chapitre $chapitre): ChapitreResource
     {
-        return new ChapitreResource($chapitre);
+        abort_unless($chapitre->isVisibleTo($request->user()), 404);
+
+        return new ChapitreResource($chapitre->load('niveau'));
     }
 
     /**

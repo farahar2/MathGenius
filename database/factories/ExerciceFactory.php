@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\Chapitre;
-use App\Models\Niveau;
+use App\Models\Exercice;
+use App\Models\Lecon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Chapitre>
+ * @extends Factory<Exercice>
  */
-class ChapitreFactory extends Factory
+class ExerciceFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,18 +20,16 @@ class ChapitreFactory extends Factory
     {
         return [
             'titre' => $this->faker->sentence(3),
-            'description' => $this->faker->paragraph(),
+            'enonce' => $this->faker->paragraph(),
+            'correction' => $this->faker->paragraph(),
             'ordre' => $this->faker->numberBetween(1, 10),
-            // Publié par défaut : un booléen aléatoire rendrait instable
-            // tout test qui lit un chapitre en tant qu'invité, puisque le
-            // contenu non publié est désormais masqué.
             'is_published' => true,
-            'id_niveau' => Niveau::factory(),
+            'id_lecon' => Lecon::factory(),
         ];
     }
 
     /**
-     * Chapitre en brouillon, invisible pour les élèves et les invités.
+     * Exercice en brouillon, invisible pour les élèves et les invités.
      */
     public function unpublished(): static
     {

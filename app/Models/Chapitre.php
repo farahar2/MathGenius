@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasPublicationScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,11 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Chapitre extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPublicationScope;
 
     protected $fillable = [
         'titre',
         'description',
+        'image',
+        'fichier_pdf',
         'ordre',
         'is_published',
         'id_niveau',
@@ -32,5 +35,15 @@ class Chapitre extends Model
     public function lecons(): HasMany
     {
         return $this->hasMany(Lecon::class, 'id_chapitre');
+    }
+
+    public function quiz(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'id_chapitre');
+    }
+
+    public function recommandations(): HasMany
+    {
+        return $this->hasMany(Recommandation::class, 'id_chapitre');
     }
 }

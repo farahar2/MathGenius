@@ -65,31 +65,82 @@ class ResourceStructureTest extends TestCase
         $this->assertExactDataKeys($response, ['id', 'nom', 'ordre', 'chapitres', 'created_at', 'updated_at']);
     }
 
-    public function test_exercice_show_exposes_only_expected_fields(): void
+    private function makeExercice(): Exercice
     {
-        $lecon = $this->makeLecon();
-        $exercice = Exercice::create([
+        return Exercice::create([
             'titre' => 'Exo',
             'enonce' => 'Énoncé',
             'correction' => 'Correction',
-            'id_lecon' => $lecon->id,
+            'is_published' => true,
+            'id_lecon' => $this->makeLecon()->id,
         ]);
+    }
+
+    public function test_exercice_show_hides_correction_from_guests(): void
+    {
+        $exercice = $this->makeExercice();
 
         $response = $this->getJson("/api/exercices/{$exercice->id}")->assertStatus(200);
 
+        $response->assertJsonMissingPath('data.correction');
+        $this->assertExactDataKeys($response, [
+            'id', 'titre', 'enonce', 'image', 'fichier_pdf',
+            'ordre', 'is_published', 'id_lecon', 'lecon', 'created_at', 'updated_at',
+        ]);
+    }
+
+    public function test_exercice_show_exposes_correction_to_authenticated_users(): void
+    {
+        $exercice = $this->makeExercice();
+
+        $response = $this->actingAs(User::factory()->create(['role' => 'student']))
+            ->getJson("/api/exercices/{$exercice->id}")
+            ->assertStatus(200);
+
+        $response->assertJsonPath('data.correction', 'Correction');
         $this->assertExactDataKeys($response, [
             'id', 'titre', 'enonce', 'correction', 'image', 'fichier_pdf',
             'ordre', 'is_published', 'id_lecon', 'lecon', 'created_at', 'updated_at',
         ]);
     }
 
-    public function test_question_show_exposes_only_expected_fields(): void
+    public function test_question_show_hides_answer_key_from_students(): void
     {
         $quiz = $this->makeQuizWithQuestion();
         $question = $quiz->questions()->first();
 
-        $response = $this->getJson("/api/questions/{$question->id}")->assertStatus(200);
+        $response = $this->actingAs(User::factory()->create(['role' => 'student']))
+            ->getJson("/api/questions/{$question->id}")
+            ->assertStatus(200);
 
+        $response->assertJsonMissingPath('data.bonne_reponse')
+            ->assertJsonMissingPath('data.explication');
+        $this->assertExactDataKeys($response, [
+            'id', 'question', 'option_a', 'option_b', 'option_c', 'option_d',
+            'notion', 'ordre', 'id_quiz', 'quiz', 'created_at', 'updated_at',
+        ]);
+    }
+
+    public function test_question_show_hides_answer_key_from_guests(): void
+    {
+        $quiz = $this->makeQuizWithQuestion();
+        $question = $quiz->questions()->first();
+
+        $this->getJson("/api/questions/{$question->id}")
+            ->assertStatus(200)
+            ->assertJsonMissingPath('data.bonne_reponse');
+    }
+
+    public function test_question_show_exposes_answer_key_to_formateur(): void
+    {
+        $quiz = $this->makeQuizWithQuestion();
+        $question = $quiz->questions()->first();
+
+        $response = $this->actingAs(User::factory()->create(['role' => 'formateur']))
+            ->getJson("/api/questions/{$question->id}")
+            ->assertStatus(200);
+
+        $response->assertJsonPath('data.bonne_reponse', 'A');
         $this->assertExactDataKeys($response, [
             'id', 'question', 'option_a', 'option_b', 'option_c', 'option_d',
             'bonne_reponse', 'explication', 'notion', 'ordre', 'id_quiz', 'quiz',
@@ -130,6 +181,27 @@ class ResourceStructureTest extends TestCase
             'id', 'score', 'score_pct', 'analyse_ia', 'recomm_ia', 'completed_at',
             'id_quiz', 'id_utilisateur', 'quiz', 'reponses', 'created_at', 'updated_at',
         ]);
+    }
+
+    public function test_tentative_show_reveals_answer_key_to_its_owner(): void
+    {
+        $user = User::factory()->create(['role' => 'student']);
+        $quiz = $this->makeQuizWithQuestion();
+        $question = $quiz->questions()->first();
+
+        $tentativeId = $this->actingAs($user)->postJson('/api/tentatives', [
+            'id_quiz' => $quiz->id,
+            'reponses' => [
+                ['id_question' => $question->id, 'reponse_eleve' => 'B'],
+            ],
+        ])->assertStatus(201)->json('data.id');
+
+        // Une fois le quiz passé, l'élève doit voir le corrigé : c'est tout
+        // l'intérêt pédagogique de la page de résultat.
+        $this->actingAs($user)
+            ->getJson("/api/tentatives/{$tentativeId}")
+            ->assertStatus(200)
+            ->assertJsonPath('data.quiz.questions.0.bonne_reponse', 'A');
     }
 
     public function test_recommandation_update_exposes_only_expected_fields(): void

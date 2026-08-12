@@ -19,6 +19,26 @@ services:
     depends_on:
       - mysql
 
+  queue-worker:
+    build:
+      context: ./vendor/laravel/sail/runtimes/8.5
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: sail-8.5/app
+    container_name: mathgenius-queue
+    restart: unless-stopped
+    command: php artisan queue:work --queue=ai,default --tries=3 --timeout=180
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - mathgenius
+    depends_on:
+      - mysql
+
   mysql:
     image: mysql:8.4
     container_name: mathgenius-mysql
