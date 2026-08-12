@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 { name: 'name', label: 'Nom', type: 'text', required: true },
                 { name: 'email', label: 'Email', type: 'text', required: true },
                 { name: 'password', label: 'Mot de passe', type: 'password', requiredOnCreate: true, hint: 'Laisser vide pour ne pas changer (modification uniquement)' },
-                { name: 'role', label: 'Rôle', type: 'select', options: ['student', 'formateur', 'admin'] },
+                { name: 'role', label: 'Rôle', type: 'select', options: ['student', 'formateur'] },
                 { name: 'niveau_id', label: 'Niveau', type: 'select', optionsFrom: 'niveaux', optionLabel: (n) => n.nom },
                 { name: 'is_premium', label: 'Premium', type: 'checkbox' },
             ],

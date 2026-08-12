@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Quiz\GenerateQuiz;
+use App\Http\Requests\Quiz\GenerateQuizRequest;
 use App\Http\Requests\Quiz\StoreQuizRequest;
 use App\Http\Requests\Quiz\UpdateQuizRequest;
 use App\Http\Resources\QuizResource;
+use App\Models\Lecon;
 use App\Models\Quiz;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,6 +34,26 @@ class QuizController extends Controller
         return (new QuizResource($quiz))
             ->response()
             ->setStatusCode(201);
+    }
+
+    /**
+     * Générer un quiz IA à partir d'une leçon
+     *
+     * @group Quiz
+     *
+     * @response 202 {"data":{"id":1,"id_lecon":1,"id_chapitre":1,"difficulte":"moyen","niveau":null,"duree_secondes":0,"created_at":"...","updated_at":"..."}}
+     */
+    public function generate(GenerateQuizRequest $request, GenerateQuiz $generateQuiz): JsonResponse
+    {
+        $this->authorize('generate', Quiz::class);
+
+        $lecon = Lecon::findOrFail($request->validated('id_lecon'));
+
+        $quiz = $generateQuiz($lecon, $request->safe()->except('id_lecon'));
+
+        return (new QuizResource($quiz))
+            ->response()
+            ->setStatusCode(202);
     }
 
     public function show(Quiz $quiz): QuizResource
