@@ -1,4 +1,47 @@
-import { Auth, apiFetch } from './auth.js';
+const TOKEN_KEY = 'mg_token';
+const USER_KEY = 'mg_user';
+
+const Auth = {
+    getToken: () => localStorage.getItem(TOKEN_KEY),
+    getUser() {
+        try {
+            return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+        } catch (e) {
+            return null;
+        }
+    },
+    setSession(token, user) {
+        localStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+    },
+    clearSession() {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+    },
+    isLoggedIn() {
+        return !!Auth.getToken();
+    },
+};
+
+async function apiFetch(path, options = {}) {
+    const token = Auth.getToken();
+    const headers = Object.assign(
+        { Accept: 'application/json', 'Content-Type': 'application/json' },
+        options.headers || {},
+        token ? { Authorization: `Bearer ${token}` } : {},
+    );
+
+    let res;
+    let data = null;
+    try {
+        res = await fetch(`/api${path}`, Object.assign({}, options, { headers }));
+        data = await res.json().catch(() => null);
+    } catch (e) {
+        return { ok: false, status: 0, data: null, networkError: true };
+    }
+
+    return { ok: res.ok, status: res.status, data };
+}
 
 function clearFormErrors(form) {
     form.querySelectorAll('[data-error-for]').forEach((el) => {
