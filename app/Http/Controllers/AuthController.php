@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Auth\RegisterUserAction;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -116,6 +117,29 @@ class AuthController extends Controller
     {
         return response()->json([
             'user' => UserResource::make($request->user()->load('niveau')),
+        ]);
+    }
+
+    /**
+     * Mettre à jour mon profil
+     *
+     * @group Authentification
+     * @authenticated
+     */
+    public function updateMe(UpdateProfileRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        if (! empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $request->user()->update($data);
+
+        return response()->json([
+            'user' => UserResource::make($request->user()->fresh()->load('niveau')),
         ]);
     }
 }
